@@ -1,4 +1,4 @@
-# docker-compose-laravel
+# laravel-docker-template
 A pretty simplified docker-compose workflow that sets up a LEMP network of containers for local Laravel development. You can view the full article that inspired this repo [here](https://medium.com/@aschmelyun).
 
 
@@ -10,6 +10,6 @@ Open up your browser of choice to [http://localhost:8080](http://localhost:8080)
 
 Containers created and their ports are as follows:
 
-- **nginx** - `:8080`
-- **mysql** - `:3306`
-- **php** - `:9000`
+- **SERVER** - `:8080`
+- **DATABASE** - `:3306`
+- **PHP** - `:9000`
