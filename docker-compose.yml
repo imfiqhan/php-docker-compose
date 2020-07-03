@@ -1,12 +1,12 @@
 version: '3'
 
 networks:
-  laravel:
+  dafault:
 
 services:
   server:
     image: nginx:stable-alpine
-    container_name: server
+    container_name: ${NETWORK_NAME}_server
     ports:
       - "${SERVER_PORT}:80"
     volumes:
@@ -16,11 +16,11 @@ services:
       - php
       - database
     networks:
-      - laravel
+      - dafault
 
   database:
     image: mysql:5.7.22
-    container_name: database
+    container_name: ${NETWORK_NAME}_database
     restart: unless-stopped
     tty: true
     ports:
@@ -28,24 +28,24 @@ services:
     volumes:
       - ./database:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SERVICE_TAGS: ${SERVICE_TAGS}
+      SERVICE_NAME: ${SERVICE_NAME}
     networks:
-      - laravel
+      - dafault
 
   php:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: php
+    container_name: ${NETWORK_NAME}_php
     volumes:
       - ./src:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     ports:
       - "${PHP_PORT}:9000"
     networks:
-      - laravel
+      - dafault
