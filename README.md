@@ -1,4 +1,4 @@
-# laravel-docker-template
+# php-docker-template
 A pretty simplified docker-compose workflow that sets up a PHP Server network of containers for local PHP development.
 
 ## Usage
