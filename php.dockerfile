@@ -1,4 +1,5 @@
-FROM php:8.1.1-fpm-alpine
+ARG PHP_VERSION
+FROM php:$PHP_VERSION-fpm-alpine
 
 ARG UID
 ARG GID
