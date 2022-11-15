@@ -1,51 +1,98 @@
 version: '3'
 
 networks:
-  dafault:
+  change-it:
+
 
 services:
-  server:
-    image: nginx:stable-alpine
-    container_name: ${NETWORK_NAME}_server
+  site:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    container_name: ${STACK_NAME}-nginx
+    restart: unless-stopped
     ports:
-      - "${SERVER_PORT}:80"
+      - ${SITE_PORT}:80
+      - ${SITE_SECURE_PORT}:443
     volumes:
-      - ./src:/var/www
-      - ./server/default.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/var/www/html
+    cpus: 0.6
+    mem_limit: 256m
     depends_on:
       - php
-      - database
+      - mysql
     networks:
-      - dafault
+      - ${STACK_NAME}
 
-  database:
-    image: mysql:5.7.22
-    container_name: ${NETWORK_NAME}_database
+  mysql:
+    image: mysql:5.7.29
+    container_name: ${STACK_NAME}-mysql
     restart: unless-stopped
     tty: true
     ports:
-      - "${DATABASE_PORT}:3306"
-    volumes:
-      - ./database:/var/lib/mysql
+      - ${MYSQL_PORT}:3306
+    user: ${UID:-1000}:${GID:-1000}
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      SERVICE_TAGS: ${SERVICE_TAGS}
-      SERVICE_NAME: ${SERVICE_NAME}
+      MYSQL_DATABASE: ${STACK_NAME}
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
+    cpus: 1.0
+    mem_limit: 512m
     networks:
-      - dafault
+      - ${STACK_NAME}
+
+  postgres:
+    image: postgres
+    container_name: ${STACK_NAME}-postgres
+    restart: unless-stopped
+    tty: true
+    ports:
+      - ${POSTGRES_PORT}:3306
+    user: ${UID:-1000}:${GID:-1000}
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: root
+      POSTGRES_DB: ${STACK_NAME}
+    volumes:
+      - ./postgresql:/var/lib/postgresql
+    cpus: 1.0
+    mem_limit: 512m
+    networks:
+      - ${STACK_NAME}
 
   php:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: ${NETWORK_NAME}_php
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    container_name: ${STACK_NAME}-php
+    restart: unless-stopped
     volumes:
-      - ./src:/var/www
+      - ./src:/var/www/html
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    ports:
-      - "${PHP_PORT}:9000"
+    cpus: 1.0
+    mem_limit: 128m
     networks:
-      - dafault
+      - ${STACK_NAME}
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: ${STACK_NAME}-mailhog
+    restart: unless-stopped
+    ports:
+      - ${MAILHOG_PORT}:1025
+      - ${MAILHOG_UI_PORT}:8025
+    cpus: 0.6
+    mem_limit: 64m
+    networks:
+      - ${STACK_NAME}

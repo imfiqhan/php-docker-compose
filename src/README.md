@@ -1,1 +1,0 @@
-Delete this file and another file/directory in this directory then add or create your application source
