@@ -24,6 +24,7 @@ services:
     depends_on:
       - php
       - mysql
+      - postgres
     networks:
       - ${STACK_NAME}
 
@@ -55,7 +56,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - ${POSTGRES_PORT}:3306
+      - ${POSTGRES_PORT}:5432
     user: ${UID:-1000}:${GID:-1000}
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -84,15 +85,14 @@ services:
     mem_limit: 128m
     networks:
       - ${STACK_NAME}
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: ${STACK_NAME}-mailhog
-    restart: unless-stopped
-    ports:
-      - ${MAILHOG_PORT}:1025
-      - ${MAILHOG_UI_PORT}:8025
-    cpus: 0.6
-    mem_limit: 64m
-    networks:
-      - ${STACK_NAME}
+  # mailhog:
+  #   image: mailhog/mailhog:latest
+  #   container_name: ${STACK_NAME}-mailhog
+  #   restart: unless-stopped
+  #   ports:
+  #     - ${MAILHOG_PORT}:1025
+  #     - ${MAILHOG_UI_PORT}:8025
+  #   cpus: 0.6
+  #   mem_limit: 64m
+  #   networks:
+  #     - ${STACK_NAME}
