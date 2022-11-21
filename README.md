@@ -10,7 +10,7 @@ Open up your browser of choice to [http://localhost:8080](http://localhost:8080)
 
 Containers created and their ports are as follows:
 - **SERVER** - `:8080`
-- **DATABASE** - `:4306`
+- **MYSQL** - `:8306`
 - **PHP** - `:9000`
 
 You can change the ports in `.env` file
