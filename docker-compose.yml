@@ -25,7 +25,7 @@ services:
       - php
       - mysql
       - postgres
-      - phpmyadmin
+      - adminer
     networks:
       - ${STACK_NAME}
 
@@ -51,24 +51,24 @@ services:
     networks:
       - ${STACK_NAME}
 
-  # postgres:
-  #   image: postgres
-  #   container_name: ${STACK_NAME}-postgres
-  #   restart: unless-stopped
-  #   tty: true
-  #   ports:
-  #     - ${POSTGRES_PORT}:5432
-  #   user: ${UID:-1000}:${GID:-1000}
-  #   environment:
-  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  #     POSTGRES_USER: root
-  #     POSTGRES_DB: ${STACK_NAME}
-  #   volumes:
-  #     - ./postgresql:/var/lib/postgresql
-  #   cpus: 1.0
-  #   mem_limit: 512m
-  #   networks:
-  #     - ${STACK_NAME}
+  postgres:
+    image: postgres
+    container_name: ${STACK_NAME}-postgres
+    restart: unless-stopped
+    tty: true
+    ports:
+      - ${POSTGRES_PORT}:5432
+    user: ${UID:-1000}:${GID:-1000}
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: root
+      POSTGRES_DB: ${STACK_NAME}
+    volumes:
+      - ./postgresql:/var/lib/postgresql
+    cpus: 1.0
+    mem_limit: 512m
+    networks:
+      - ${STACK_NAME}
 
   php:
     build:
@@ -87,17 +87,13 @@ services:
     networks:
       - ${STACK_NAME}
 
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: ${STACK_NAME}-phpmyadmin
+  adminer:
+    image: adminer
+    container_name: ${STACK_NAME}-adminer
     restart: unless-stopped
     ports:
-      - ${PHP_MY_ADMIN_PORT}:80
+      - ${ADMINER_PORT}:8080
     user: ${UID:-1000}:${GID:-1000}
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
-      - UPLOAD_LIMIT=50M
     cpus: 0.2
     mem_limit: 50m
     networks:
