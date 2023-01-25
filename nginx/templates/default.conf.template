@@ -2,7 +2,7 @@ server {
     listen 80;
     index index.php index.html;
     server_name _;
-    root /var/www/html/public;
+    root /var/www/html;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -19,19 +19,12 @@ server {
     }
 }
 
-# redirect all request to https
-# server {
-#     listen 80 default_server;
-#     server_name _;
-#     return 301 https://$host$request_uri;
-# }
-
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
     index index.php index.html;
     server_name _;
-    root /var/www/html/public;
+    root /var/www/html;
 
     ssl_certificate /etc/nginx/cert.pem;
     ssl_certificate_key /etc/nginx/key.pem;
