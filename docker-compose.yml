@@ -76,6 +76,7 @@ services:
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+        - PHP_VERSION=${PHP_VERSION}
     container_name: ${STACK_NAME}-php
     restart: unless-stopped
     volumes:
