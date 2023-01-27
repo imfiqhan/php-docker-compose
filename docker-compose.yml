@@ -15,6 +15,8 @@ services:
       - ${SITE_SECURE_PORT}:443
     volumes:
       - ./src:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/templates:/etc/nginx/templates
       - ./nginx/ssl/cert.pem:/etc/nginx/cert.pem
       - ./nginx/ssl/key.pem:/etc/nginx/key.pem
@@ -23,8 +25,8 @@ services:
     depends_on:
       - php
       - mysql
-      - postgres
       - adminer
+      # - postgres
     networks:
       - ${STACK_NAME}
 
@@ -50,24 +52,25 @@ services:
     networks:
       - ${STACK_NAME}
 
-  postgres:
-    image: postgres
-    container_name: ${STACK_NAME}-postgres
-    restart: unless-stopped
-    tty: true
-    ports:
-      - ${POSTGRES_PORT}:5432
-    user: ${UID:-1000}:${GID:-1000}
-    environment:
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_USER: root
-      POSTGRES_DB: ${STACK_NAME}
-    volumes:
-      - ./postgresql:/var/lib/postgresql
-    cpus: 1.0
-    mem_limit: 512m
-    networks:
-      - ${STACK_NAME}
+  # TODO: fix for run using non-root user
+  # postgres:
+  #   image: postgres
+  #   container_name: ${STACK_NAME}-postgres
+  #   restart: unless-stopped
+  #   tty: true
+  #   ports:
+  #     - ${POSTGRES_PORT}:5432
+  #   user: ${UID:-1000}:${GID:-1000}
+  #   environment:
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #     POSTGRES_USER: root
+  #     POSTGRES_DB: ${STACK_NAME}
+  #   volumes:
+  #     - ./postgresql:/var/lib/postgresql
+  #   cpus: 1.0
+  #   mem_limit: 512m
+  #   networks:
+  #     - ${STACK_NAME}
 
   php:
     build:
