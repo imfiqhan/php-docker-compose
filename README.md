@@ -9,8 +9,8 @@ To get started, make sure you have [Docker installed](https://docs.docker.com/do
 Open up your browser of choice to [http://localhost:8080](http://localhost:8080) and you should see your PHP app running as intended. 
 
 Containers created and their ports are as follows:
-- **SERVER** - `:8080`
-- **MYSQL** - `:8306`
+- **SERVER** - `:8000`
+- **MYSQL** - `:3600`
 - **PHP** - `:9000`
 
 You can change the ports in `.env` file
