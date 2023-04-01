@@ -30,7 +30,6 @@ services:
     depends_on:
       - php
       - mysql
-      - adminer
       # - postgres
     networks:
       - app
