@@ -27,10 +27,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # install pdo
 RUN docker-php-ext-install pdo pdo_mysql
 
-RUN apk add --no-cache libpq-dev \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql \
-    && apk del libpq-dev
+# install pgsql
+# RUN apk add --no-cache libpq-dev \
+#     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+#     && docker-php-ext-install pdo pdo_pgsql pgsql \
+#     && apk del libpq-dev
 
 # install zip
 # RUN apk add --no-cache zip libzip-dev
