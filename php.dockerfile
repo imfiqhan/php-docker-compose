@@ -14,11 +14,11 @@ WORKDIR /var/www/html
 # MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
 RUN delgroup dialout
 
-RUN addgroup -g ${GID} --system laravel
-RUN adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
+RUN addgroup -g ${GID} --system application
+RUN adduser -G application --system -D -s /bin/sh -u ${UID} application
 
-RUN sed -i "s/user = www-data/user = laravel/g" /usr/local/etc/php-fpm.d/www.conf
-RUN sed -i "s/group = www-data/group = laravel/g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/user = www-data/user = application/g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/group = www-data/group = application/g" /usr/local/etc/php-fpm.d/www.conf
 RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
 # install composer
@@ -43,9 +43,10 @@ RUN apk add --no-cache libpq-dev \
 # RUN docker-php-ext-enable exif
 
 # install gd
-# RUN apk add --no-cache libpng libpng-dev jpeg-dev libjpeg-turbo-dev \
-#     && docker-php-ext-configure gd --with-jpeg \
+# RUN apk add --no-cache freetype-dev libpng libpng-dev jpeg-dev libjpeg-turbo-dev \
+#     && docker-php-ext-configure gd --with-jpeg --with-freetype \
 #     && docker-php-ext-install gd \
+#     && docker-php-ext-enable gd \
 #     && apk del libpng-dev
 
 # install redis
