@@ -21,8 +21,14 @@ RUN sed -i "s/user = www-data/user = application/g" /usr/local/etc/php-fpm.d/www
 RUN sed -i "s/group = www-data/group = application/g" /usr/local/etc/php-fpm.d/www.conf
 RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
+# install opcache
+RUN docker-php-ext-install opcache
+
 # install composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# install npm
+# RUN apk add --no-cache nodejs npm
 
 # install pdo
 RUN docker-php-ext-install pdo pdo_mysql
