@@ -135,8 +135,8 @@ services:
           memory: 50M
     networks:
       - app
-  # mailhog:
-  #   image: mailhog/mailhog:latest
+  # mailpit:
+  #   image: axllent/mailpit:latest
   #   container_name: ${STACK_NAME}-mailhog
   #   restart: unless-stopped
   #   ports:
@@ -144,5 +144,10 @@ services:
   #     - ${MAILHOG_UI_PORT}:8025
   #   cpus: 0.6
   #   mem_limit: 64m
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.6'
+  #         memory: 64M
   #   networks:
   #     - ${STACK_NAME}
