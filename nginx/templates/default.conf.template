@@ -2,7 +2,7 @@ server {
     listen 80;
     index index.php index.html;
     server_name _;
-    root /var/www/html;
+    root /var/www/html/public;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -24,7 +24,7 @@ server {
     listen [::]:443 ssl;
     index index.php index.html;
     server_name _;
-    root /var/www/html;
+    root /var/www/html/public;
 
     ssl_certificate /etc/nginx/cert.pem;
     ssl_certificate_key /etc/nginx/key.pem;
