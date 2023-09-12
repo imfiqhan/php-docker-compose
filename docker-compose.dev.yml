@@ -3,12 +3,13 @@ version: '3'
 networks:
   app:
     name: ${STACK_NAME}
+    driver: bridge
 
 services:
   site:
     image: nginx
     container_name: ${STACK_NAME}-nginx
-    user: ${UID:-1000}:${GID:-1000}
+    user: $(id -u):$(id -g)
     restart: unless-stopped
     ports:
       - ${SITE_PORT}:80
@@ -31,18 +32,17 @@ services:
       - php
       # - mysql
       # - postgres
-      # - adminer
     networks:
       - app
 
   # mysql:
   #   image: mariadb:lts
   #   container_name: ${STACK_NAME}-mysql
+  #   user: $(id -u):$(id -g)
   #   restart: unless-stopped
   #   tty: true
   #   ports:
   #     - ${MYSQL_PORT}:3306
-  #   user: ${UID:-1000}:${GID:-1000}
   #   environment:
   #     MYSQL_DATABASE: ${STACK_NAME}
   #     MYSQL_USER: ${STACK_NAME}
@@ -54,6 +54,15 @@ services:
   #     - ./mysql/data:/var/lib/mysql
   #     - ./mysql/log:/var/log/mysql
   #   command: --log_error=/var/lib/mysql/mysql_error.log --general_log_file=/var/lib/mysql/mysql.log --general_log=1 --slow_query_log=1 --slow_query_log_file=/var/lib/mysql/mysql_slow.log --long_query_time=2 --log_queries_not_using_indexes=1 --max_allowed_packet=${DATABASE_MAX_ALLOWED_PACKET}
+  #   cpus: 1.0
+  #   mem_limit: 512m
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1.0'
+  #         memory: 512M
+  #   networks:
+  #     - app
   #   healthcheck:
   #     test:
   #       [
@@ -65,24 +74,15 @@ services:
   #     timeout: 5s
   #     interval: 5s
   #     retries: 5
-  #   cpus: 1.0
-  #   mem_limit: 512m
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '1.0'
-  #         memory: 512M
-  #   networks:
-  #     - app
 
   # postgres:
   #   image: postgres
   #   container_name: ${STACK_NAME}-postgres
+  #   user: $(id -u):$(id -g)
   #   restart: unless-stopped
   #   tty: true
   #   ports:
   #     - ${POSTGRES_PORT}:5432
-  #   user: ${UID:-1000}:${GID:-1000}
   #   environment:
   #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
   #     POSTGRES_USER: ${STACK_NAME}
@@ -109,8 +109,8 @@ services:
       context: .
       dockerfile: php.dockerfile
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
+        - UID=$(id -u)
+        - GID=$(id -g)
         - PHP_VERSION=${PHP_VERSION}
     container_name: ${STACK_NAME}-php
     restart: unless-stopped
@@ -130,10 +130,10 @@ services:
   # adminer:
   #   image: adminer
   #   container_name: ${STACK_NAME}-adminer
+  #   user: $(id -u):$(id -g)
   #   restart: unless-stopped
   #   ports:
   #     - ${ADMINER_PORT}:8080
-  #   user: ${UID:-1000}:${GID:-1000}
   #   cpus: 0.2
   #   mem_limit: 50m
   #   deploy:
@@ -145,11 +145,12 @@ services:
   #     - app
   # mailpit:
   #   image: axllent/mailpit:latest
-  #   container_name: ${STACK_NAME}-mailhog
+  #   container_name: ${STACK_NAME}-mailpit
+  #   user: $(id -u):$(id -g)
   #   restart: unless-stopped
   #   ports:
-  #     - ${MAILHOG_PORT}:1025
-  #     - ${MAILHOG_UI_PORT}:8025
+  #     - ${MAILPIT_PORT}:1025
+  #     - ${MAILPIT_UI_PORT}:8025
   #   cpus: 0.6
   #   mem_limit: 64m
   #   deploy:
@@ -158,4 +159,4 @@ services:
   #         cpus: '0.6'
   #         memory: 64M
   #   networks:
-  #     - ${STACK_NAME}
+  #     - app

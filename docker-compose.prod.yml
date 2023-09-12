@@ -3,12 +3,13 @@ version: '3'
 networks:
   app:
     name: ${STACK_NAME}
+    driver: bridge
 
 services:
   site:
     image: nginx
     container_name: ${STACK_NAME}-nginx
-    user: ${UID:-1000}:${GID:-1000}
+    user: $(id -u):$(id -g)
     restart: unless-stopped
     ports:
       - ${SITE_PORT}:80
@@ -20,76 +21,96 @@ services:
       - ./nginx/templates:/etc/nginx/templates
       - ./nginx/ssl/cert.pem:/etc/nginx/cert.pem
       - ./nginx/ssl/key.pem:/etc/nginx/key.pem
-    cpus: 0.6
-    mem_limit: 256m
+    cpus: ${SITE_CPU}
+    mem_limit: ${SITE_MEM}
     deploy:
       resources:
         limits:
-          cpus: '0.6'
-          memory: 256M
+          cpus: ${SITE_CPU}
+          memory: ${SITE_MEM}
     depends_on:
       - php
-      - mysql
+      # - mysql
       # - postgres
     networks:
       - app
 
-  mysql:
-    image: mariadb:lts
-    container_name: ${STACK_NAME}-mysql
-    restart: unless-stopped
-    tty: true
-    ports:
-      - ${MYSQL_PORT}:3306
-    user: ${UID:-1000}:${GID:-1000}
-    environment:
-      MYSQL_DATABASE: ${STACK_NAME}
-      MYSQL_USER: ${STACK_NAME}
-      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-      SERVICE_TAGS: prod
-      SERVICE_NAME: mysql
-    volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/log:/var/log/mysql
-    command: --log_error=/var/lib/mysql/mysql_error.log --general_log_file=/var/lib/mysql/mysql.log --general_log=1 --slow_query_log=1 --slow_query_log_file=/var/lib/mysql/mysql_slow.log --long_query_time=2 --log_queries_not_using_indexes=1 --max_allowed_packet=${DATABASE_MAX_ALLOWED_PACKET}
-    cpus: 1.0
-    mem_limit: 512m
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-    networks:
-      - app
+  # mysql:
+  #   image: mariadb:lts
+  #   container_name: ${STACK_NAME}-mysql
+  #   user: $(id -u):$(id -g)
+  #   restart: unless-stopped
+  #   tty: true
+  #   ports:
+  #     - ${MYSQL_PORT}:3306
+  #   environment:
+  #     MYSQL_DATABASE: ${STACK_NAME}
+  #     MYSQL_USER: ${STACK_NAME}
+  #     MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+  #     MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+  #     SERVICE_TAGS: prod
+  #     SERVICE_NAME: mysql
+  #   volumes:
+  #     - ./mysql/data:/var/lib/mysql
+  #     - ./mysql/log:/var/log/mysql
+  #   command: --log_error=/var/lib/mysql/mysql_error.log --general_log_file=/var/lib/mysql/mysql.log --general_log=1 --slow_query_log=1 --slow_query_log_file=/var/lib/mysql/mysql_slow.log --long_query_time=2 --log_queries_not_using_indexes=1 --max_allowed_packet=${DATABASE_MAX_ALLOWED_PACKET}
+  #   cpus: ${MYSQL_CPU}
+  #   mem_limit: ${MYSQL_MEM}
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: ${MYSQL_CPU}
+  #         memory: ${MYSQL_MEM}
+  #   networks:
+  #     - app
+  #   healthcheck:
+  #     test:
+  #       [
+  #         'CMD',
+  #         '/usr/local/bin/healthcheck.sh',
+  #         '--innodb_initialized'
+  #       ]
+  #     start_period: 5s
+  #     timeout: 5s
+  #     interval: 5s
+  #     retries: 5
 
-  # TODO: fix for run using non-root user
   # postgres:
   #   image: postgres
   #   container_name: ${STACK_NAME}-postgres
+  #   user: $(id -u):$(id -g)
   #   restart: unless-stopped
   #   tty: true
   #   ports:
   #     - ${POSTGRES_PORT}:5432
-  #   user: ${UID:-1000}:${GID:-1000}
   #   environment:
   #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  #     POSTGRES_USER: root
+  #     POSTGRES_USER: ${STACK_NAME}
   #     POSTGRES_DB: ${STACK_NAME}
   #   volumes:
-  #     - ./postgresql:/var/lib/postgresql
-  #   cpus: 1.0
-  #   mem_limit: 512m
+  #     - ./postgresql/data:/var/lib/postgresql/data
+  #   cpus: ${POSTGRES_CPU}
+  #   mem_limit: ${POSTGRES_MEM}
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: ${POSTGRES_CPU}
+  #         memory: ${POSTGRES_MEM}
   #   networks:
-  #     - ${STACK_NAME}
+  #     - app
+  #   healthcheck:
+  #     interval: 10s
+  #     retries: 10
+  #     test: "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""
+  #     timeout: 2s
 
   php:
     build:
       context: .
       dockerfile: php.dockerfile
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
+        - UID=$(id -u)
+        - GID=$(id -g)
         - PHP_VERSION=${PHP_VERSION}
     container_name: ${STACK_NAME}-php
     restart: unless-stopped
@@ -97,12 +118,12 @@ services:
       - ./src:/var/www/html
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
       - ./php/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
-    cpus: 1.0
-    mem_limit: 128m
+    cpus: ${PHP_CPU}
+    mem_limit: ${PHP_MEM}
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 128M
+          cpus: ${PHP_CPU}
+          memory: ${PHP_MEM}
     networks:
       - app
