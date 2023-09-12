@@ -1,5 +1,12 @@
-# php-docker-template
-A pretty simplified docker-compose workflow that sets up a PHP Server network of containers for local PHP development.
+# PHP Docker Compose Template
+A pretty simplified docker-compose workflow that sets up a PHP Server network of containers for development and production.
+
+## Stacks
+1. Nginx
+2. PHP
+3. MySQL / PostgreSQL
+4. Adminer (development)
+5. Mailpit (development)
 
 ## Usage
 To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then clone this repository. Add your PHP project to the `./src` folder, then open a terminal and from this cloned respository's root run:
