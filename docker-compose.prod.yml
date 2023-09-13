@@ -9,7 +9,7 @@ services:
   site:
     image: nginx
     container_name: ${STACK_NAME}-nginx
-    user: $(id -u):$(id -g)
+    user: ${UID}:${GID}
     restart: unless-stopped
     ports:
       - ${SITE_PORT}:80
@@ -38,7 +38,7 @@ services:
   # mysql:
   #   image: mariadb:lts
   #   container_name: ${STACK_NAME}-mysql
-  #   user: $(id -u):$(id -g)
+  #   user: ${UID}:${GID}
   #   restart: unless-stopped
   #   tty: true
   #   ports:
@@ -78,7 +78,7 @@ services:
   # postgres:
   #   image: postgres
   #   container_name: ${STACK_NAME}-postgres
-  #   user: $(id -u):$(id -g)
+  #   user: ${UID}:${GID}
   #   restart: unless-stopped
   #   tty: true
   #   ports:
@@ -109,8 +109,8 @@ services:
       context: .
       dockerfile: php.dockerfile
       args:
-        - UID=$(id -u)
-        - GID=$(id -g)
+        - UID=${UID}
+        - GID=${GID}
         - PHP_VERSION=${PHP_VERSION}
     container_name: ${STACK_NAME}-php
     restart: unless-stopped
