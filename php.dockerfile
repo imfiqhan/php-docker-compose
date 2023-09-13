@@ -56,6 +56,11 @@ COPY --from=composer:lts /usr/bin/composer /usr/bin/composer
 #     && docker-php-ext-enable gd \
 #     && apk del libpng-dev
 
+# install intl
+# RUN apk add --no-cache icu-dev \ 
+#     && docker-php-ext-configure intl \ 
+#     && docker-php-ext-install intl
+
 # install redis
 # RUN mkdir -p /usr/src/php/ext/redis \
 #     && curl -L https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
