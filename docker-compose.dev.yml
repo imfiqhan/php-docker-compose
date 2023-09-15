@@ -7,7 +7,7 @@ networks:
 
 services:
   site:
-    image: nginx
+    image: nginx:stable
     container_name: ${STACK_NAME}-nginx
     user: ${UID}:${GID}
     restart: unless-stopped
@@ -17,7 +17,7 @@ services:
     volumes:
       - ./src:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/templates:/etc/nginx/templates
       - ./nginx/ssl/cert.pem:/etc/nginx/cert.pem
       - ./nginx/ssl/key.pem:/etc/nginx/key.pem
@@ -35,6 +35,28 @@ services:
     networks:
       - app
 
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+    container_name: ${STACK_NAME}-php
+    user: ${UID}:${GID}
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./php/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+    cpus: 1.0
+    mem_limit: 128m
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 128M
+    networks:
+      - app
   # mysql:
   #   image: mariadb:lts
   #   container_name: ${STACK_NAME}-mysql
@@ -104,29 +126,6 @@ services:
   #     test: "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""
   #     timeout: 2s
 
-  php:
-    build:
-      context: .
-      dockerfile: php.dockerfile
-      args:
-        - UID=${UID}
-        - GID=${GID}
-        - PHP_VERSION=${PHP_VERSION}
-    container_name: ${STACK_NAME}-php
-    restart: unless-stopped
-    volumes:
-      - ./src:/var/www/html
-      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
-      - ./php/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
-    cpus: 1.0
-    mem_limit: 128m
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 128M
-    networks:
-      - app
   # adminer:
   #   image: adminer
   #   container_name: ${STACK_NAME}-adminer

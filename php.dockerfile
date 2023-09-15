@@ -1,25 +1,9 @@
 ARG PHP_VERSION
 FROM php:$PHP_VERSION-fpm-alpine
 
-ARG UID
-ARG GID
-
-ENV UID=${UID}
-ENV GID=${GID}
-
 RUN mkdir -p /var/www/html
 
 WORKDIR /var/www/html
-
-# MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
-RUN delgroup dialout
-
-RUN addgroup -g ${GID} --system application
-RUN adduser -G application --system -D -s /bin/sh -u ${UID} application
-
-RUN sed -i "s/user = www-data/user = application/g" /usr/local/etc/php-fpm.d/www.conf
-RUN sed -i "s/group = www-data/group = application/g" /usr/local/etc/php-fpm.d/www.conf
-RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
 # install opcache
 RUN docker-php-ext-install opcache
@@ -69,7 +53,5 @@ COPY --from=composer:lts /usr/bin/composer /usr/bin/composer
 
 # Install mariadb client
 # RUN apk add --update --no-cache mysql-client
-
-USER ${UID}:${GID}
 
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
