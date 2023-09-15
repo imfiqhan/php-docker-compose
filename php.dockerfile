@@ -20,8 +20,7 @@ COPY --from=composer:lts /usr/bin/composer /usr/bin/composer
 # install pgsql
 # RUN apk add --no-cache libpq-dev \
 #     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-#     && docker-php-ext-install pdo pdo_pgsql pgsql \
-#     && apk del libpq-dev
+#     && docker-php-ext-install pdo pdo_pgsql pgsql
 
 # install zip
 # RUN apk add --no-cache zip libzip-dev
