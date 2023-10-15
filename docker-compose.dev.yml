@@ -21,13 +21,13 @@ services:
       - ./nginx/templates:/etc/nginx/templates
       - ./nginx/ssl/cert.pem:/etc/nginx/cert.pem
       - ./nginx/ssl/key.pem:/etc/nginx/key.pem
-    cpus: 0.6
-    mem_limit: 256m
+    cpus: ${SITE_CPU}
+    mem_limit: ${SITE_MEM}
     deploy:
       resources:
         limits:
-          cpus: '0.6'
-          memory: 256M
+          cpus: ${SITE_CPU}
+          memory: ${SITE_MEM}
     depends_on:
       - php
       # - mysql
@@ -48,13 +48,13 @@ services:
       - ./src:/var/www/html
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
       - ./php/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
-    cpus: 1.0
-    mem_limit: 128m
+    cpus: ${PHP_CPU}
+    mem_limit: ${PHP_MEM}
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 128M
+          cpus: ${PHP_CPU}
+          memory: ${PHP_MEM}
     networks:
       - app
   # mysql:
@@ -76,13 +76,13 @@ services:
   #     - ./mysql/data:/var/lib/mysql
   #     - ./mysql/log:/var/log/mysql
   #   command: --log_error=/var/lib/mysql/mysql_error.log --general_log_file=/var/lib/mysql/mysql.log --general_log=1 --slow_query_log=1 --slow_query_log_file=/var/lib/mysql/mysql_slow.log --long_query_time=2 --log_queries_not_using_indexes=1 --max_allowed_packet=${DATABASE_MAX_ALLOWED_PACKET}
-  #   cpus: 1.0
-  #   mem_limit: 512m
+  #   cpus: ${MYSQL_CPU}
+  #   mem_limit: ${MYSQL_MEM}
   #   deploy:
   #     resources:
   #       limits:
-  #         cpus: '1.0'
-  #         memory: 512M
+  #         cpus: ${MYSQL_CPU}
+  #         memory: ${MYSQL_MEM}
   #   networks:
   #     - app
   #   healthcheck:
@@ -111,13 +111,13 @@ services:
   #     POSTGRES_DB: ${STACK_NAME}
   #   volumes:
   #     - ./postgresql/data:/var/lib/postgresql/data
-  #   cpus: 1.0
-  #   mem_limit: 512m
+  #   cpus: ${POSTGRES_CPU}
+  #   mem_limit: ${POSTGRES_MEM}
   #   deploy:
   #     resources:
   #       limits:
-  #         cpus: '1.0'
-  #         memory: 512M
+  #         cpus: ${POSTGRES_CPU}
+  #         memory: ${POSTGRES_MEM}
   #   networks:
   #     - app
   #   healthcheck:
@@ -133,13 +133,13 @@ services:
   #   restart: unless-stopped
   #   ports:
   #     - ${ADMINER_PORT}:8080
-  #   cpus: 0.2
-  #   mem_limit: 50m
+  #   cpus: ${ADMINER_CPU}
+  #   mem_limit: ${ADMINER_MEM}
   #   deploy:
   #     resources:
   #       limits:
-  #         cpus: '0.2'
-  #         memory: 50M
+  #         cpus: ${ADMINER_CPU}
+  #         memory: ${ADMINER_MEM}
   #   networks:
   #     - app
   # mailpit:
@@ -150,12 +150,12 @@ services:
   #   ports:
   #     - ${MAILPIT_PORT}:1025
   #     - ${MAILPIT_UI_PORT}:8025
-  #   cpus: 0.6
-  #   mem_limit: 64m
+  #   cpus: ${MAILPIT_CPU}
+  #   mem_limit: ${MAILPIT_MEM}
   #   deploy:
   #     resources:
   #       limits:
-  #         cpus: '0.6'
-  #         memory: 64M
+  #         cpus: ${MAILPIT_CPU}
+  #         memory: ${MAILPIT_MEM}
   #   networks:
   #     - app
