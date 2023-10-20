@@ -48,6 +48,8 @@ services:
       - ./src:/var/www/html
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
       - ./php/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+      - ./php/cacert.pem:/etc/cacert.pem
+      - ./php/docker-php-curl-ca-cert.ini:/usr/local/etc/php/conf.d/docker-php-curl-ca-cert.ini
     cpus: ${PHP_CPU}
     mem_limit: ${PHP_MEM}
     deploy:
