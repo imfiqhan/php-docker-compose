@@ -40,6 +40,8 @@ services:
       context: .
       dockerfile: php.dockerfile
       args:
+        - UID=${UID}
+        - GID=${GID}
         - PHP_VERSION=${PHP_VERSION}
     container_name: ${STACK_NAME}-php
     user: ${UID}:${GID}
