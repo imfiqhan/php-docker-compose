@@ -1,6 +1,12 @@
 ARG PHP_VERSION
 FROM php:$PHP_VERSION-fpm-alpine
 
+ARG UID
+ARG GID
+
+ENV UID=${UID}
+ENV GID=${GID}
+
 RUN mkdir -p /var/www/html
 
 WORKDIR /var/www/html
@@ -29,6 +35,14 @@ COPY --from=composer:lts /usr/bin/composer /usr/bin/composer
 
 # install pdo
 # RUN docker-php-ext-install pdo pdo_mysql
+
+# insatll mysqli php ext
+# RUN docker-php-ext-install mysqli \
+#     && docker-php-ext-enable mysqli
+
+# install mysql php ext
+# RUN docker-php-ext-install mysql \
+#     && docker-php-ext-enable mysql
 
 # install pgsql 
 # RUN apk add --no-cache libpq-dev \
