@@ -129,3 +129,41 @@ services:
   #     retries: 10
   #     test: "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""
   #     timeout: 2s
+
+  # adminer:
+  #   image: adminer
+  #   container_name: ${STACK_NAME}-adminer
+  #   user: ${UID}:${GID}
+  #   restart: unless-stopped
+  #   ports:
+  #     - ${ADMINER_PORT}:8080
+  #   cpus: ${ADMINER_CPU}
+  #   mem_limit: ${ADMINER_MEM}
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: ${ADMINER_CPU}
+  #         memory: ${ADMINER_MEM}
+  #   networks:
+  #     - app
+
+  # filebrowser:
+  #   image: filebrowser/filebrowser
+  #   container_name: ${STACK_NAME}-filebrowser
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8300:80
+  #   volumes:
+  #     - ./src:/srv
+  #     - ./filebrowser/db/filebrowser.db:/database.db
+  #     - ./filebrowser/config/.filebrowser.json:/.filebrowser.json
+  #   user: ${UID:-1000}:${GID:-1000}
+  #   cpus: 1
+  #   mem_limit: 512m
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 512M
+  #   networks:
+  #     - app

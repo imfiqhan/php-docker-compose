@@ -1,0 +1,93 @@
+server {
+    listen 80;
+    index index.php index.html;
+    server_name _;
+    root /var/www/html/public;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~* /(?:uploads|images|css|front|plugin|js|fonts)/.*\.(php|html|xml|phtml)$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    location /adminer/ {
+        proxy_pass http://adminer:8080/;
+        proxy_set_header X-Forwarded-Prefix "/adminer";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /filebrowser/ {
+        proxy_pass http://filebrowser/;
+        proxy_set_header X-Forwarded-Prefix "/filebrowser";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    index index.php index.html;
+    server_name _;
+    root /var/www/html/public;
+
+    ssl_certificate /etc/nginx/cert.pem;
+    ssl_certificate_key /etc/nginx/key.pem;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~* /(?:uploads|images|css|front|plugin|js|fonts)/.*\.(php|html|xml|phtml)$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    location /adminer/ {
+        proxy_pass http://adminer:8080/;
+        proxy_set_header X-Forwarded-Prefix "/adminer";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /filebrowser/ {
+        proxy_pass http://filebrowser/;
+        proxy_set_header X-Forwarded-Prefix "/filebrowser";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
