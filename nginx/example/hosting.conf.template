@@ -1,8 +1,15 @@
 server {
     listen 80;
-    index index.php index.html;
+    listen [::]:80;
     server_name _;
     root /var/www/html/public;
+
+    client_max_body_size 20M;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php index.html;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -46,12 +53,18 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    index index.php index.html;
     server_name _;
     root /var/www/html/public;
 
+    client_max_body_size 20M;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
     ssl_certificate /etc/nginx/cert.pem;
     ssl_certificate_key /etc/nginx/key.pem;
+
+    index index.php index.html;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
