@@ -61,24 +61,32 @@ services:
           memory: ${PHP_MEM}
     networks:
       - app
-
-  php-apache:
-    build:
-      context: .
-      dockerfile: php-apache.dockerfile
-      args:
-        - UID=${UID}
-        - GID=${GID}
-        - PHP_VERSION=${PHP_VERSION}
-    ports:
-      - ${SITE_PORT}:80
-      - ${SITE_SECURE_PORT}:443
-    volumes:
-      - ./src:/var/www/html
-      - ./php-apache/php-apache.ini:/usr/local/etc/php/conf.d/php-apache.ini
-      - ./ssl/key.pem:/home/application/ssl/key.pem
-      - ./ssl/cert.pem:/home/application/ssl/cert.pem
-      - ./php-apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+  # php-apache:
+  #   build:
+  #     context: .
+  #     dockerfile: php-apache.dockerfile
+  #     args:
+  #       - UID=${UID}
+  #       - GID=${GID}
+  #       - PHP_VERSION=${PHP_VERSION}
+  #   ports:
+  #     - ${SITE_PORT}:80
+  #     - ${SITE_SECURE_PORT}:443
+  #   volumes:
+  #     - ./src:/var/www/html
+  #     - ./php-apache/php-apache.ini:/usr/local/etc/php/conf.d/php-apache.ini
+  #     - ./ssl/key.pem:/home/application/ssl/key.pem
+  #     - ./ssl/cert.pem:/home/application/ssl/cert.pem
+  #     - ./php-apache/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+  #   cpus: ${PHP_CPU}
+  #   mem_limit: ${PHP_MEM}
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: ${PHP_CPU}
+  #         memory: ${PHP_MEM}
+  #   networks:
+  #     - app
   # mysql:
   #   image: mariadb:lts
   #   container_name: ${STACK_NAME}-mysql
