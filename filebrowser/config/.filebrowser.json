@@ -1,0 +1,18 @@
+{
+    "port": 80,
+    "branding": {
+        "name": "Filebrowser Jatim"
+    },
+    "baseurl": "/filebrowser",
+    "address": "",
+    "log": "stdout",
+    "database": "/database.db",
+    "root": "/srv",
+    "password": "$2y$10$q8664Tfqp.m9uFQf0TVmLeDEpd//Y/l7fSikMgmTbMPRh/umzaGBm",
+    "recaptcha.key": "6Ld_008oAAAAABdJoh8crHd-fQMs2GZHRrXn1isP",
+    "recaptcha.secret": "6Ld_008oAAAAAMFGpxUtJLcYQKyzRKNB3FMy0uBn",
+    "recaptcha": {
+        "key": "6Ld_008oAAAAABdJoh8crHd-fQMs2GZHRrXn1isP",
+        "secret": "6Ld_008oAAAAAMFGpxUtJLcYQKyzRKNB3FMy0uBn"
+    }
+}
